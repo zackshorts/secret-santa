@@ -1,1 +1,42 @@
-<p>main works!</p>
+<div class="main-body">
+  <h1>secret santa</h1>
+  <mat-card class="main-grid">
+    <form [formGroup]="nameForm" class="contact-form">
+      <span>
+        <mat-form-field>
+          <input formControlName="name" matInput placeholder="Name" [(ngModel)]="inputName" required>
+          <mat-error *ngIf="nameForm.get('name').hasError('required')">
+            Name is <strong>required</strong>
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field>
+          <input formControlName="email" matInput placeholder="Email" [(ngModel)]="inputEmail" required>
+          <mat-error *ngIf="nameForm.get('email').hasError('required')">
+            Email is <strong>required</strong>
+          </mat-error>
+        </mat-form-field>
+      </span>
+      <span>
+        <mat-form-field>
+          <input formControlName="spouseName" matInput placeholder="Spouse Name (optional)" [(ngModel)]="spouseName">
+        </mat-form-field>
+        <mat-form-field>
+          <input formControlName="spouseEmail" matInput placeholder="Spouse Email (optional)" [(ngModel)]="spouseEmail">
+          <mat-error *ngIf="nameForm.get('spouseEmail').hasError('email')">
+            Email is <strong>incorrect</strong>
+          </mat-error>
+        </mat-form-field>
+      </span>
+      <div mat-dialog-actions class="action-buttons">
+        <button mat-button (click)="addParticipant(this.inputName, this.inputEmail, this.spouseName, this.spouseEmail)" [disabled]="!nameForm.valid"><mat-icon>add</mat-icon>Add Name</button>
+      </div>    </form>
+    <div class="participant-list">
+      <div>
+        <p>Participants:</p>
+        <ul *ngFor="let p of participants">
+          <li>{{p.name}} - {{p.email}}</li>
+        </ul>
+        </div>
+    </div>
+  </mat-card>
+</div>
