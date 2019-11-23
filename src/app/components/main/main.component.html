@@ -28,7 +28,7 @@
         </mat-form-field>
       </span>
       <div mat-dialog-actions class="action-buttons">
-        <button mat-raised-button color="accent" (click)="submitAllNames()" [disabled]="this.participants.length < 0" routerLink="/results"><mat-icon>check</mat-icon>Submit all names</button>
+        <button mat-raised-button color="accent" (click)="submitAllNames()" [disabled]="this.participants.length < 4" routerLink="/results"><mat-icon>check</mat-icon>Submit all names</button>
         <button mat-raised-button color="primary" (click)="addParticipant(this.inputName, this.inputEmail, this.spouseName, this.spouseEmail)" [disabled]="!nameForm.valid"><mat-icon>add</mat-icon>Add Name</button>
       </div>    </form>
     <div class="participant-list">
