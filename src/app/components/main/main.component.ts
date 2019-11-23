@@ -1,7 +1,10 @@
 import { Component, OnInit } from "@angular/core";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
-import { Router } from "@angular/router";
+import { MatSnackBar, MatDialog } from '@angular/material';
+import * as jspdf from 'jspdf'; 
+import * as $ from 'jquery';
+import { ThanksComponent } from '../thanks/thanks.component';
 
 @Component({
   selector: "app-main",
@@ -12,10 +15,10 @@ export class MainComponent implements OnInit {
   participants = [];
   shuffledParticipants = [];
   pairedParticipants = [];
-  inputName = "";
-  inputEmail = "";
-  spouseName = "";
-  spouseEmail = "";
+  inputName = null
+  inputEmail = null;
+  spouseName = null;
+  spouseEmail = null
   nameForm = new FormGroup({
     name: new FormControl(this.inputName, Validators.required),
     spouseName: new FormControl(this.spouseName),
@@ -25,10 +28,14 @@ export class MainComponent implements OnInit {
     ]),
     spouseEmail: new FormControl(this.spouseEmail, Validators.email)
   });
+  isRed: true;
+  year: any;
 
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(private http: HttpClient, private snackBar: MatSnackBar, public dialog: MatDialog) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.year = new Date().getFullYear();
+  }
 
   addParticipant(
     name: string,
@@ -51,7 +58,6 @@ export class MainComponent implements OnInit {
       this.participants.push({
         name,
         email,
-        spouseName: ""
       });
     }
     this.nameForm.reset();
@@ -73,6 +79,22 @@ export class MainComponent implements OnInit {
     }
   }
 
+  openDialog(): void {
+    const dialogConfig = {
+      width: '95vw',
+      autoFocus: true,
+    };
+    const dialogRef = this.dialog.open(ThanksComponent, dialogConfig);
+
+    dialogRef.afterClosed().subscribe(result => {
+      this.nameForm.reset();
+      this.participants = [];
+      this.pairedParticipants = [];
+      this.shuffledParticipants = [];
+    });
+  }
+
+
   shuffle(participantArray: string[]) {
     let currentIndex = participantArray.length;
     let temporaryValue, randomIndex;
@@ -92,7 +114,17 @@ export class MainComponent implements OnInit {
     this.shuffledParticipants = this.shuffle(this.participants);
     this.verifyPairs();
     this.makePairs();
-    console.log(this.pairedParticipants);
+    // this.pairedParticipants.forEach(participant => {
+    //   this.sendEmail(participant);
+    // });
+    this.savePdf();  
+    console.log(this.pairedParticipants); 
+    // this.openDialog();
+    
+    this.snackBar.open('Emails have been sent!', "Dismiss",{
+      duration: 3000,
+      panelClass: 'center'
+    });
   }
 
   verifyPairs() {
@@ -123,19 +155,32 @@ export class MainComponent implements OnInit {
       }
     }
   }
-  
 
-  sendEmail() {
+  savePdf() {
+    let doc = new jspdf();
+        let specialElementHandlers = {
+            '#editor': function (element, renderer) {
+                return true;
+            }
+        };
+
+        doc.fromHTML($('#content').html(), 15, 15, {
+            'width': 170,
+            'elementHandlers': specialElementHandlers
+        });
+
+        doc.save(`secret-santa-${this.year}.pdf`);
+  }
+
+  sendEmail(emailObject: any) {
     const headers = new HttpHeaders({
       "Content-Type": "application/json",
       Accept: "*/*"
     });
     const options = { headers };
     const body = {
-      name: this.inputName,
-      to: this.inputEmail,
-      from: "santaclaus@gmail.com",
-      message: "you will be giving to "
+      to: emailObject.receiver.email,
+      message: `${emailObject.giver.name},\n\nThank you for participating in Secret Santa this year! You will have the chance to give a gift to ${emailObject.receiver.name}. Please spend around $10-20 and make the gift meaningful. \n\nMerry Christmas!`
     };
     return this.http
       .post(

@@ -55,3 +55,21 @@ button {
   float: right;
   margin-right: 15px;
 }
+
+.theme-picker {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+}
+
+.red-green {
+  margin-left: 10px;
+  height: 20px;
+  width: 60px;
+  background: linear-gradient(270deg, rgb(10, 70, 10) 50%, rgb(175, 14, 16) 50%);
+  border-radius: 3px;
+}
+
+/* .hide {
+  display: none;
+} */

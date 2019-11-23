@@ -5,16 +5,16 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MainComponent } from './components/main/main.component';
-import { ResultsComponent } from './components/results/results.component';
-import {MatButtonModule, MatCardModule, MatDialogModule, MatFormFieldModule, MatIconModule, MatInputModule} from '@angular/material';
+import {MatButtonModule, MatCardModule, MatDialogModule, MatFormFieldModule, MatIconModule, MatInputModule, MatSlideToggleModule, MatSnackBarModule} from '@angular/material';
 import {ReactiveFormsModule} from '@angular/forms';
 import {HttpClientModule} from '@angular/common/http';
+import { ThanksComponent } from './components/thanks/thanks.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     MainComponent,
-    ResultsComponent
+    ThanksComponent,
   ],
   imports: [
     BrowserModule,
@@ -27,6 +27,9 @@ import {HttpClientModule} from '@angular/common/http';
     MatButtonModule,
     MatDialogModule,
     MatIconModule,
+    MatSlideToggleModule,
+    MatSnackBarModule,
+    MatDialogModule,
     HttpClientModule
   ],
   providers: [],
