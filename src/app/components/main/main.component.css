@@ -12,13 +12,21 @@ h1 {
   text-align: right;
   padding: 25px;
   font-size: 4rem;
-  color: rgb(175, 14, 16);
+  color: #388E3C ;
 }
 
 .main-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-gap: 25px;
+}
+
+.participants:nth-of-type(even){
+  color:  rgb(175, 14, 16);
+}
+
+.participants:nth-of-type(odd){
+  color:#388E3C;
 }
 
 .participant-list {
@@ -53,7 +61,7 @@ mat-form-field {
 
 button {
   float: right;
-  margin-right: 15px;
+  margin-right: 35px;
 }
 
 .theme-picker {
@@ -70,6 +78,14 @@ button {
   border-radius: 3px;
 }
 
-/* .hide {
+.hide {
   display: none;
-} */
+}
+
+.grinch {
+  position: absolute;
+  bottom: 0;
+  width: auto;
+  height: 60%;
+  left: 15%;
+}

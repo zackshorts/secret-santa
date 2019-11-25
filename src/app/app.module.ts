@@ -8,13 +8,11 @@ import { MainComponent } from './components/main/main.component';
 import {MatButtonModule, MatCardModule, MatDialogModule, MatFormFieldModule, MatIconModule, MatInputModule, MatSlideToggleModule, MatSnackBarModule} from '@angular/material';
 import {ReactiveFormsModule} from '@angular/forms';
 import {HttpClientModule} from '@angular/common/http';
-import { ThanksComponent } from './components/thanks/thanks.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     MainComponent,
-    ThanksComponent,
   ],
   imports: [
     BrowserModule,

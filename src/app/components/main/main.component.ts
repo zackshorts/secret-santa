@@ -1,10 +1,9 @@
 import { Component, OnInit } from "@angular/core";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
-import { MatSnackBar, MatDialog } from '@angular/material';
+import { MatSnackBar, MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import * as jspdf from 'jspdf'; 
 import * as $ from 'jquery';
-import { ThanksComponent } from '../thanks/thanks.component';
 
 @Component({
   selector: "app-main",
@@ -79,21 +78,6 @@ export class MainComponent implements OnInit {
     }
   }
 
-  openDialog(): void {
-    const dialogConfig = {
-      width: '95vw',
-      autoFocus: true,
-    };
-    const dialogRef = this.dialog.open(ThanksComponent, dialogConfig);
-
-    dialogRef.afterClosed().subscribe(result => {
-      this.nameForm.reset();
-      this.participants = [];
-      this.pairedParticipants = [];
-      this.shuffledParticipants = [];
-    });
-  }
-
 
   shuffle(participantArray: string[]) {
     let currentIndex = participantArray.length;
@@ -110,19 +94,39 @@ export class MainComponent implements OnInit {
     return participantArray;
   }
 
+  savePdf() {
+    let doc = new jspdf();
+        let specialElementHandlers = {
+            '#editor': function (element, renderer) {
+                return true;
+            }
+        };
+
+        doc.fromHTML($('#content').html(), 15, 15, {
+            'width': 170,
+            'elementHandlers': specialElementHandlers
+        });
+
+        doc.save(`secret-santa-${this.year}.pdf`);
+  }
+
   submitAllNames() {
+    let scope = this;
     this.shuffledParticipants = this.shuffle(this.participants);
     this.verifyPairs();
     this.makePairs();
-    // this.pairedParticipants.forEach(participant => {
-    //   this.sendEmail(participant);
-    // });
-    this.savePdf();  
-    console.log(this.pairedParticipants); 
-    // this.openDialog();
-    
-    this.snackBar.open('Emails have been sent!', "Dismiss",{
-      duration: 3000,
+    this.pairedParticipants.forEach(participant => {
+      this.sendEmail(participant);
+    });
+    setTimeout(function () {
+      scope.savePdf();
+    }, 500);
+
+    scope.nameForm.reset();
+    scope.participants = [];
+
+    this.snackBar.open('Emails sent and pdf downloaded.', "Dismiss",{
+      duration: 6000,
       panelClass: 'center'
     });
   }
@@ -156,22 +160,6 @@ export class MainComponent implements OnInit {
     }
   }
 
-  savePdf() {
-    let doc = new jspdf();
-        let specialElementHandlers = {
-            '#editor': function (element, renderer) {
-                return true;
-            }
-        };
-
-        doc.fromHTML($('#content').html(), 15, 15, {
-            'width': 170,
-            'elementHandlers': specialElementHandlers
-        });
-
-        doc.save(`secret-santa-${this.year}.pdf`);
-  }
-
   sendEmail(emailObject: any) {
     const headers = new HttpHeaders({
       "Content-Type": "application/json",
@@ -179,7 +167,7 @@ export class MainComponent implements OnInit {
     });
     const options = { headers };
     const body = {
-      to: emailObject.receiver.email,
+      to: emailObject.giver.email,
       message: `${emailObject.giver.name},\n\nThank you for participating in Secret Santa this year! You will have the chance to give a gift to ${emailObject.receiver.name}. Please spend around $10-20 and make the gift meaningful. \n\nMerry Christmas!`
     };
     return this.http
