@@ -168,7 +168,7 @@ export class MainComponent implements OnInit {
     const options = { headers };
     const body = {
       to: emailObject.giver.email,
-      message: `${emailObject.giver.name},\n\nThank you for participating in Secret Santa this year! You will have the chance to give a gift to ${emailObject.receiver.name}. Please spend around $10-20 and make the gift meaningful. \n\nMerry Christmas!`
+      message: `${emailObject.giver.name},\n\nThank you for participating in Secret Santa this year! You will have the chance to give a gift to ${emailObject.receiver.name}. \n\nMerry Christmas!`
     };
     return this.http
       .post(

@@ -1,5 +1,14 @@
 {
   "projects": {
     "default": "secret-santa-23"
+  },
+  "targets": {
+    "secret-santa-23": {
+      "hosting": {
+        "secretsanta": [
+          "zacharyshorts-1"
+        ]
+      }
+    }
   }
 }
